@@ -25,12 +25,11 @@ CONFIG = {
     "deploy_path": SETTINGS["OUTPUT_PATH"],
     # Github Pages configuration
     "github_pages_branch": "gh-pages",
-    "commit_message": f"'Publish site on {datetime.date.today().isoformat()}'",
+    "commit_message": "Publish site update",  # Simplified commit message
     # Host and port for `serve`
     "host": "localhost",
     "port": 8000,
 }
-
 
 @task
 def clean(c):
@@ -39,29 +38,24 @@ def clean(c):
         shutil.rmtree(CONFIG["deploy_path"])
         os.makedirs(CONFIG["deploy_path"])
 
-
 @task
 def build(c):
     """Build local version of site"""
     pelican_run("-s {settings_base}".format(**CONFIG))
-
 
 @task
 def rebuild(c):
     """`build` with the delete switch"""
     pelican_run("-d -s {settings_base}".format(**CONFIG))
 
-
 @task
 def regenerate(c):
     """Automatically regenerate site upon file modification"""
     pelican_run("-r -s {settings_base}".format(**CONFIG))
 
-
 @task
 def serve(c):
     """Serve site at http://$HOST:$PORT/ (default is localhost:8000)"""
-
     class AddressReuseTCPServer(RootedHTTPServer):
         allow_reuse_address = True
 
@@ -72,21 +66,17 @@ def serve(c):
     )
 
     if OPEN_BROWSER_ON_SERVE:
-        # Open site in default browser
         import webbrowser
-
         webbrowser.open("http://{host}:{port}".format(**CONFIG))
 
     sys.stderr.write("Serving at {host}:{port} ...\n".format(**CONFIG))
     server.serve_forever()
-
 
 @task
 def reserve(c):
     """`build`, then `serve`"""
     build(c)
     serve(c)
-
 
 @task
 def preview(c):
@@ -124,34 +114,17 @@ def livereload(c):
         server.watch(glob, cached_build)
 
     if OPEN_BROWSER_ON_SERVE:
-        # Open site in default browser
         import webbrowser
-
         webbrowser.open("http://{host}:{port}".format(**CONFIG))
 
     server.serve(host=CONFIG["host"], port=CONFIG["port"], root=CONFIG["deploy_path"])
-
-
-@task
-def publish(c):
-    """Publish to production via rsync"""
-    pelican_run("-s {settings_publish}".format(**CONFIG))
-    c.run(
-        'rsync --delete --exclude ".DS_Store" -pthrvz -c '
-        '-e "ssh -p {ssh_port}" '
-        "{} {ssh_user}@{ssh_host}:{ssh_path}".format(
-            CONFIG["deploy_path"].rstrip("/") + "/", **CONFIG
-        )
-    )
 
 @task
 def gh_pages(c):
     """Publish to GitHub Pages"""
     preview(c)
     c.run(
-        "ghp-import -b {github_pages_branch} "
-        "-m {commit_message} "
-        "{deploy_path} -p".format(**CONFIG)
+        f'ghp-import -b gh-pages -m "Publish site update" {CONFIG["deploy_path"]} -p'
     )
 
 def pelican_run(cmd):
