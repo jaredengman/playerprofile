@@ -4,7 +4,7 @@ save_as: index.html
 
 23 year old RHP up to 95mph with a four pitch mix. Multiple year Friday-night starter for the University of Washington with over 200 innings and 43 starts. 28.1 IP with a 4.45 ERA last year for the Missoula Paddleheads in the Pioneer League.
 
-## Live AB Highlights
+## Pro Day Highlights
 
 <style>
 .video-container {
