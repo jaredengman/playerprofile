@@ -38,7 +38,7 @@ save_as: index.html
 
 ## Arsenal Overview
 
-![Arsenal Plot](images/arsenal-plot.png)
+![Arsenal Plot](images/arsenal-plot.JPG)
 
 ## In-Game Highlights
 
